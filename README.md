@@ -1,4 +1,4 @@
-# Dublin Bus Reliability Intelligence Platform
+# Bus Reliability Platform
 
 ## Module
 Scalable Cloud Programming
@@ -6,14 +6,17 @@ Scalable Cloud Programming
 ## College
 National College of Ireland
 
-## Description
-Real-time analytics platform using Lambda Architecture.
+## Project
+Real-time Dublin Bus Reliability Intelligence Platform using Lambda Architecture.
+
+## Dataset
+Transport for Ireland (TFI) GTFS-Realtime
 
 ## AWS Services
 - Amazon S3
 - Amazon Kinesis Data Streams
 - AWS Lambda
-- Amazon EMR
+- Amazon EMR (PySpark)
 - Amazon Athena
 - Amazon SNS
 - Amazon CloudWatch
