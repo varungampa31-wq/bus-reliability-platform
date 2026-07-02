@@ -1,6 +1,7 @@
 # Virtual Environments
 venv/
 activate/
+.env
 
 # Python
 __pycache__/
