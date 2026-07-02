@@ -1,9 +1,16 @@
+# Virtual Environments
 venv/
+activate/
+
+# Python
 __pycache__/
 *.pyc
-.env
-.idea/
+
+# VS Code
 .vscode/
-*.log
-*.csv
-*.parquet
+
+# Large data files
+data/gtfs/
+data/processed/
+data/batch-layer/
+producer/data/

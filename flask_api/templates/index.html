@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dublin Bus Reliability Intelligence Platform</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+
+        <a class="navbar-brand">
+            Dublin Bus Reliability Intelligence Platform
+        </a>
+
+        <ul class="navbar-nav flex-row">
+
+            <li class="nav-item me-4">
+                <a class="nav-link active" href="/">Dashboard</a>
+            </li>
+
+            <li class="nav-item me-4">
+                <a class="nav-link" href="#liveTrips">Live Trips</a>
+            </li>
+
+            <li class="nav-item me-4">
+                <a class="nav-link" href="#analytics">Analytics</a>
+            </li>
+
+        </ul>
+
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body text-center">
+                    <h5>Total Trips</h5>
+                    <h2 id="totalTrips">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body text-center">
+                    <h5>Average Score</h5>
+                    <h2 id="avgScore">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-info text-white shadow">
+                <div class="card-body text-center">
+                    <h5>Excellent</h5>
+                    <h2 id="excellent">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-danger text-white shadow">
+                <div class="card-body text-center">
+                    <h5>Poor</h5>
+                    <h2 id="poor">0</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <h3 class="section-title mt-5">
+        Search Route
+    </h3>
+
+    <div class="input-group search-box">
+
+        <input
+            type="text"
+            id="routeInput"
+            class="form-control"
+            placeholder="Enter Route (Example: 46A or C4)">
+
+        <button
+            class="btn btn-primary"
+            onclick="searchRoute()">
+
+            Search
+
+        </button>
+
+    </div>
+
+    <br>
+
+    <div
+        id="searchResult"
+        class="alert alert-secondary">
+
+        Search any route to view statistics.
+
+    </div>
+
+    <h3
+        class="section-title"
+        id="analytics">
+
+        Reliability Distribution
+
+    </h3>
+
+    <div style="width:500px">
+
+        <canvas id="statusChart"></canvas>
+
+    </div>
+
+    <h3
+        class="section-title mt-5"
+        id="liveTrips">
+
+        Live Bus Trips
+
+    </h3>
+
+    <div class="table-responsive">
+
+        <table class="table table-bordered table-striped">
+
+            <thead class="table-dark">
+
+                <tr>
+
+                    <th>Trip ID</th>
+                    <th>Route</th>
+                    <th>Reliability Score</th>
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="tripTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+// Summary
+
+loadSummary();
+
+// Live Trips
+
+loadLiveTrips();
+
+let statusChart;
+
+function loadSummary() {
+
+    fetch("/api/summary")
+    .then(response => response.json())
+    .then(data => {
+
+        document.getElementById("totalTrips").innerHTML = data.total_trips;
+        document.getElementById("avgScore").innerHTML = data.average_score;
+        document.getElementById("excellent").innerHTML = data.excellent;
+        document.getElementById("poor").innerHTML = data.poor;
+
+        if(statusChart){
+            statusChart.destroy();
+        }
+
+        statusChart = new Chart(
+            document.getElementById("statusChart"),
+            {
+                type: "pie",
+                data: {
+                    labels: [
+                        "Excellent",
+                        "Good",
+                        "Average",
+                        "Poor",
+                        "Critical"
+                    ],
+                    datasets: [{
+                        data: [
+                            data.excellent,
+                            data.good,
+                            data.average,
+                            data.poor,
+                            data.critical
+                        ]
+                    }]
+                }
+            }
+        );
+
+    });
+
+}
+
+function loadLiveTrips() {
+
+    fetch("/api/live")
+    .then(response => response.json())
+    .then(data => {
+
+        let rows = "";
+
+        data.forEach(bus => {
+
+            rows += `
+            <tr>
+                <td>${bus.trip_id}</td>
+                <td>${bus.route_id}</td>
+                <td>${bus.reliability_score}</td>
+                <td>${bus.status}</td>
+            </tr>
+            `;
+
+        });
+
+        document.getElementById("tripTable").innerHTML = rows;
+
+    });
+
+}
+
+// Search Route
+
+function searchRoute(){
+
+    let route = document.getElementById("routeInput").value.trim();
+
+    if(route === ""){
+
+        alert("Please enter a route.");
+
+        return;
+
+    }
+
+    fetch("/api/search/" + route)
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if(data.message){
+
+            document.getElementById("searchResult").innerHTML = data.message;
+
+            return;
+
+        }
+
+        document.getElementById("searchResult").innerHTML = `
+
+            <div class="card shadow">
+
+            <div class="card-body">
+
+            <h4>Route ${data.route}</h4>
+
+            <table class="table">
+
+            <tr>
+            <td><b>Source</b></td>
+            <td>${data.source}</td>
+            </tr>
+
+            <tr>
+            <td><b>Destination</b></td>
+            <td>${data.destination}</td>
+            </tr>
+
+            <tr>
+            <td><b>Total Trips</b></td>
+            <td>${data.total_trips}</td>
+            </tr>
+
+            <tr>
+            <td><b>Average Score</b></td>
+            <td>${data.average_score}</td>
+            </tr>
+
+            <tr>
+            <td><b>Excellent</b></td>
+            <td>${data.excellent}</td>
+            </tr>
+
+            <tr>
+            <td><b>Good</b></td>
+            <td>${data.good}</td>
+            </tr>
+
+            <tr>
+            <td><b>Average</b></td>
+            <td>${data.average}</td>
+            </tr>
+
+            <tr>
+            <td><b>Poor</b></td>
+            <td>${data.poor}</td>
+            </tr>
+
+            <tr>
+            <td><b>Critical</b></td>
+            <td>${data.critical}</td>
+            </tr>
+
+            </table>
+
+            </div>
+
+            </div>
+
+        `;
+
+    })
+
+    .catch(error => {
+
+        document.getElementById("searchResult").innerHTML =
+            "Error fetching route information.";
+
+        console.error(error);
+
+    });
+
+}
+
+// Initial load
+loadSummary();
+loadLiveTrips();
+
+// Refresh every 30 seconds
+setInterval(function () {
+
+    loadSummary();
+    loadLiveTrips();
+
+}, 30000);
+
+document.getElementById("routeInput").addEventListener("keypress", function(event){
+
+    if(event.key === "Enter"){
+
+        searchRoute();
+
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>
