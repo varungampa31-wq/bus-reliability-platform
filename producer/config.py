@@ -1,29 +1,33 @@
 """
-Configuration file for the Dublin Bus Reliability Platform
+Configuration file for Bus Reliability Platform
 """
 
-# ------------------------------------------------------------------
-# GTFS Feed Configuration
-# ------------------------------------------------------------------
+import os
+from dotenv import load_dotenv
 
-# We will add the actual TFI GTFS feed URL later.
-GTFS_FEED_URL = ""
+# Load environment variables
+load_dotenv()
 
-# Time (in seconds) between feed downloads
+# -------------------------------------------------------
+# API Configuration
+# -------------------------------------------------------
+
+GTFS_API_KEY = os.getenv("GTFS_API_KEY")
+
+GTFS_FEED_URL = os.getenv("GTFS_FEED_URL")
+
 FETCH_INTERVAL = 30
 
-# ------------------------------------------------------------------
-# Local Storage Configuration
-# ------------------------------------------------------------------
+# -------------------------------------------------------
+# Local Storage
+# -------------------------------------------------------
 
 RAW_DATA_FOLDER = "data/raw"
 
 RAW_DATA_FILE = "vehicle_data.json"
 
-# ------------------------------------------------------------------
-# Project Information
-# ------------------------------------------------------------------
+# -------------------------------------------------------
+# Project
+# -------------------------------------------------------
 
 PROJECT_NAME = "Bus Reliability Platform"
-
-DATA_SOURCE = "Transport for Ireland (GTFS-Realtime)"
