@@ -19,10 +19,13 @@
 <body>
 
 <nav class="navbar navbar-dark bg-dark">
+
     <div class="container-fluid">
 
         <a class="navbar-brand">
+
             Dublin Bus Reliability Intelligence Platform
+
         </a>
 
         <ul class="navbar-nav flex-row">
@@ -42,147 +45,270 @@
         </ul>
 
     </div>
+
 </nav>
 
 <div class="container mt-4">
 
+    <!-- ========================================= -->
+    <!-- Batch Layer KPI Cards -->
+    <!-- ========================================= -->
+
+    <h3 class="mb-3">
+        Historical KPIs (Batch Layer)
+    </h3>
+
     <div class="row g-4">
 
         <div class="col-md-3">
+
             <div class="card bg-primary text-white shadow">
+
                 <div class="card-body text-center">
+
                     <h5>Total Trips</h5>
+
                     <h2 id="totalTrips">0</h2>
+
                 </div>
+
             </div>
+
         </div>
 
         <div class="col-md-3">
+
             <div class="card bg-success text-white shadow">
+
                 <div class="card-body text-center">
+
                     <h5>Average Score</h5>
+
                     <h2 id="avgScore">0</h2>
+
                 </div>
+
             </div>
+
         </div>
 
         <div class="col-md-3">
+
             <div class="card bg-info text-white shadow">
+
                 <div class="card-body text-center">
+
                     <h5>Excellent</h5>
+
                     <h2 id="excellent">0</h2>
+
                 </div>
+
             </div>
+
         </div>
 
         <div class="col-md-3">
+
             <div class="card bg-danger text-white shadow">
+
                 <div class="card-body text-center">
+
                     <h5>Poor</h5>
+
                     <h2 id="poor">0</h2>
+
                 </div>
+
             </div>
+
+        </div>
+
+    </div>
+
+    <hr class="mt-5 mb-4">
+
+    <!-- ========================================= -->
+    <!-- Speed Layer KPI Cards -->
+    <!-- ========================================= -->
+
+    <h3 class="mb-3">
+
+        Live Streaming KPIs (Speed Layer)
+
+    </h3>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+
+            <div class="card bg-warning shadow">
+
+                <div class="card-body text-center">
+
+                    <h5>Live Trips</h5>
+
+                    <h2 id="liveTripsCount">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card bg-secondary text-white shadow">
+
+                <div class="card-body text-center">
+
+                    <h5>Live Avg Score</h5>
+
+                    <h2 id="liveAvgScore">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card bg-success text-white shadow">
+
+                <div class="card-body text-center">
+
+                    <h5>Live Excellent</h5>
+
+                    <h2 id="liveExcellent">0</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card bg-danger text-white shadow">
+
+                <div class="card-body text-center">
+
+                    <h5>Live Poor</h5>
+
+                    <h2 id="livePoor">0</h2>
+
+                </div>
+
+            </div>
+
         </div>
 
     </div>
 
     <h3 class="section-title mt-5">
-        Search Route
+    Search Route
     </h3>
 
     <div class="input-group search-box">
 
-        <input
-            type="text"
-            id="routeInput"
-            class="form-control"
-            placeholder="Enter Route (Example: 46A or C4)">
+    <input
+        type="text"
+        id="routeInput"
+        class="form-control"
+        placeholder="Enter Route (Example: 46A or C4)">
 
-        <button
-            class="btn btn-primary"
-            onclick="searchRoute()">
+    <button
+        class="btn btn-primary"
+        onclick="searchRoute()">
 
-            Search
+        Search
 
-        </button>
+    </button>
 
-    </div>
+    <button
+        class="btn btn-secondary ms-2"
+        onclick="loadSummary()">
 
-    <br>
+        Reset Dashboard
 
-    <div
-        id="searchResult"
-        class="alert alert-secondary">
+    </button>
 
-        Search any route to view statistics.
+</div>
 
-    </div>
+<br>
 
-    <h3
-        class="section-title"
-        id="analytics">
+<div
+    id="searchResult"
+    class="alert alert-secondary">
 
-        Reliability Distribution
+    Search any route to view statistics.
 
-    </h3>
+</div>
 
-    <div style="width:500px">
+<h3
+    class="section-title"
+    id="analytics">
 
-        <canvas id="statusChart"></canvas>
+    Reliability Distribution
 
-    </div>
+</h3>
 
-    <h3
-        class="section-title mt-5"
-        id="liveTrips">
+<div style="width:500px">
 
-        Live Bus Trips
+    <canvas id="statusChart"></canvas>
 
-    </h3>
+</div>
 
-    <div class="table-responsive">
+<h3
+    class="section-title mt-5"
+    id="liveTrips">
 
-        <table class="table table-bordered table-striped">
+    Live Bus Trips
 
-            <thead class="table-dark">
+</h3>
 
-                <tr>
+<div class="table-responsive">
 
-                    <th>Trip ID</th>
-                    <th>Route</th>
-                    <th>Reliability Score</th>
-                    <th>Status</th>
+    <table class="table table-bordered table-striped">
 
-                </tr>
+        <thead class="table-dark">
 
-            </thead>
+            <tr>
 
-            <tbody id="tripTable">
+                <th>Trip ID</th>
+                <th>Route</th>
+                <th>Reliability Score</th>
+                <th>Status</th>
 
-            </tbody>
+            </tr>
 
-        </table>
+        </thead>
 
-    </div>
+        <tbody id="tripTable">
+
+        </tbody>
+
+    </table>
+
+</div>
 
 </div>
 
 <script>
 
-// Summary
+let statusChart;
 
 loadSummary();
-
-// Live Trips
-
+loadLiveSummary();
 loadLiveTrips();
-
-let statusChart;
 
 function loadSummary() {
 
     fetch("/api/summary")
+
     .then(response => response.json())
+
     .then(data => {
 
         document.getElementById("totalTrips").innerHTML = data.total_trips;
@@ -191,14 +317,19 @@ function loadSummary() {
         document.getElementById("poor").innerHTML = data.poor;
 
         if(statusChart){
+
             statusChart.destroy();
+
         }
 
         statusChart = new Chart(
             document.getElementById("statusChart"),
             {
+
                 type: "pie",
+
                 data: {
+
                     labels: [
                         "Excellent",
                         "Good",
@@ -206,7 +337,9 @@ function loadSummary() {
                         "Poor",
                         "Critical"
                     ],
+
                     datasets: [{
+
                         data: [
                             data.excellent,
                             data.good,
@@ -214,10 +347,31 @@ function loadSummary() {
                             data.poor,
                             data.critical
                         ]
+
                     }]
+
                 }
+
             }
+
         );
+
+    });
+
+}
+
+function loadLiveSummary(){
+
+    fetch("/api/live-summary")
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        document.getElementById("liveTripsCount").innerHTML = data.total_trips;
+        document.getElementById("liveAvgScore").innerHTML = data.average_score;
+        document.getElementById("liveExcellent").innerHTML = data.excellent;
+        document.getElementById("livePoor").innerHTML = data.poor;
 
     });
 
@@ -226,7 +380,9 @@ function loadSummary() {
 function loadLiveTrips() {
 
     fetch("/api/live")
+
     .then(response => response.json())
+
     .then(data => {
 
         let rows = "";
@@ -249,8 +405,6 @@ function loadLiveTrips() {
     });
 
 }
-
-// Search Route
 
 function searchRoute(){
 
@@ -278,66 +432,89 @@ function searchRoute(){
 
         }
 
+        // Update Historical KPI Cards
+
+        document.getElementById("totalTrips").innerHTML = data.total_trips;
+        document.getElementById("avgScore").innerHTML = data.average_score;
+        document.getElementById("excellent").innerHTML = data.excellent;
+        document.getElementById("poor").innerHTML = data.poor;
+
+        // Update Pie Chart
+
+        statusChart.data.datasets[0].data = [
+
+            data.excellent,
+            data.good,
+            data.average,
+            data.poor,
+            data.critical
+
+        ];
+
+        statusChart.update();
+
+        // Route Information
+
         document.getElementById("searchResult").innerHTML = `
 
-            <div class="card shadow">
+        <div class="card shadow">
 
             <div class="card-body">
 
-            <h4>Route ${data.route}</h4>
+                <h4>Route ${data.route}</h4>
 
-            <table class="table">
+                <table class="table table-bordered">
 
-            <tr>
-            <td><b>Source</b></td>
-            <td>${data.source}</td>
-            </tr>
+                    <tr>
+                        <th>Source</th>
+                        <td>${data.source}</td>
+                    </tr>
 
-            <tr>
-            <td><b>Destination</b></td>
-            <td>${data.destination}</td>
-            </tr>
+                    <tr>
+                        <th>Destination</th>
+                        <td>${data.destination}</td>
+                    </tr>
 
-            <tr>
-            <td><b>Total Trips</b></td>
-            <td>${data.total_trips}</td>
-            </tr>
+                    <tr>
+                        <th>Total Trips</th>
+                        <td>${data.total_trips}</td>
+                    </tr>
 
-            <tr>
-            <td><b>Average Score</b></td>
-            <td>${data.average_score}</td>
-            </tr>
+                    <tr>
+                        <th>Average Score</th>
+                        <td>${data.average_score}</td>
+                    </tr>
 
-            <tr>
-            <td><b>Excellent</b></td>
-            <td>${data.excellent}</td>
-            </tr>
+                    <tr>
+                        <th>Excellent</th>
+                        <td>${data.excellent}</td>
+                    </tr>
 
-            <tr>
-            <td><b>Good</b></td>
-            <td>${data.good}</td>
-            </tr>
+                    <tr>
+                        <th>Good</th>
+                        <td>${data.good}</td>
+                    </tr>
 
-            <tr>
-            <td><b>Average</b></td>
-            <td>${data.average}</td>
-            </tr>
+                    <tr>
+                        <th>Average</th>
+                        <td>${data.average}</td>
+                    </tr>
 
-            <tr>
-            <td><b>Poor</b></td>
-            <td>${data.poor}</td>
-            </tr>
+                    <tr>
+                        <th>Poor</th>
+                        <td>${data.poor}</td>
+                    </tr>
 
-            <tr>
-            <td><b>Critical</b></td>
-            <td>${data.critical}</td>
-            </tr>
+                    <tr>
+                        <th>Critical</th>
+                        <td>${data.critical}</td>
+                    </tr>
 
-            </table>
-
-            </div>
+                </table>
 
             </div>
+
+        </div>
 
         `;
 
@@ -354,21 +531,29 @@ function searchRoute(){
 
 }
 
-// Initial load
-loadSummary();
-loadLiveTrips();
 
-// Refresh every 30 seconds
-setInterval(function () {
+// -------------------------------------
+// Refresh Every 30 Seconds
+// -------------------------------------
+
+setInterval(function(){
 
     loadSummary();
+
+    loadLiveSummary();
+
     loadLiveTrips();
 
-}, 30000);
+},30000);
 
-document.getElementById("routeInput").addEventListener("keypress", function(event){
 
-    if(event.key === "Enter"){
+// -------------------------------------
+// Search on Enter Key
+// -------------------------------------
+
+document.getElementById("routeInput").addEventListener("keypress",function(event){
+
+    if(event.key==="Enter"){
 
         searchRoute();
 
@@ -381,3 +566,4 @@ document.getElementById("routeInput").addEventListener("keypress", function(even
 </body>
 
 </html>
+
