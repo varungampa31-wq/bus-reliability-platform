@@ -1,27 +1,53 @@
 """
 Kinesis Producer
-Sends processed trip updates to Amazon Kinesis.
+Replays processed trip updates to Amazon Kinesis
+at a controlled rate (1 record per second).
 """
 
 import json
+import time
 import boto3
+from pathlib import Path
 
 # ---------- AWS Configuration ----------
 
 REGION = "us-east-1"
 STREAM_NAME = "bus-trip-stream"
 
-# Create Kinesis Client
+# ---------- Kinesis Client ----------
+
 kinesis = boto3.client(
     "kinesis",
     region_name=REGION
 )
 
+# ---------- JSON File ----------
 
-def send_to_kinesis(records):
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+JSON_FILE = BASE_DIR / "data" / "processed" / "processed_trip_updates.json"
+
+
+def replay_to_kinesis(delay=1):
     """
-    Sends trip updates to Amazon Kinesis.
+    Replay processed JSON records into Kinesis
+    at a controlled rate.
     """
+
+    if not JSON_FILE.exists():
+
+        print(f"File not found: {JSON_FILE}")
+
+        return
+
+    with open(JSON_FILE, "r", encoding="utf-8") as file:
+
+        records = json.load(file)
+
+    print("=" * 60)
+    print(f"Loaded {len(records)} records")
+    print("Starting replay...")
+    print("=" * 60)
 
     total = 0
 
@@ -33,12 +59,26 @@ def send_to_kinesis(records):
 
             Data=json.dumps(record),
 
-            PartitionKey=record["route_id"]
+            PartitionKey=str(record["route_id"])
 
         )
 
         total += 1
 
+        print(
+            f"[{total}] Route: {record['route_id']} | "
+            f"Trip: {record['trip_id']} | "
+            f"Score: {record['reliability_score']}"
+        )
+
+        # Replay one record every second
+        time.sleep(delay)
+
     print("=" * 60)
-    print(f"Successfully sent {total} records to Kinesis")
+    print("Replay Completed")
     print("=" * 60)
+
+
+if __name__ == "__main__":
+
+    replay_to_kinesis(delay=1)

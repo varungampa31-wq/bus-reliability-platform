@@ -1,0 +1,9 @@
+{
+    "total_trips": 80,
+    "excellent": 15,
+    "good": 10,
+    "average": 25,
+    "poor": 30,
+    "critical": 0,
+    "average_score": 72.38
+}
